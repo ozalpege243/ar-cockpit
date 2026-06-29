@@ -98,15 +98,16 @@ const Clouds = ({ speed = 70, opacity = 0.3, topRange = [5, 45] }) => {
   // Blobs are generated ONCE — never regenerated when `speed` changes,
   // otherwise they teleport every frame (caused the takeoff "spin" feel).
   // Each blob carries a stable fraction (0..1) of the cycle as its delay.
+  const [topMin, topMax] = topRange;
   const blobs = useMemo(
     () =>
       [...Array(7)].map(() => ({
-        top: topRange[0] + Math.random() * (topRange[1] - topRange[0]),
+        top: topMin + Math.random() * (topMax - topMin),
         size: 90 + Math.random() * 140,
         delayFrac: Math.random(),
         op: 0.4 + Math.random() * 0.6,
       })),
-    [topRange[0], topRange[1]]
+    [topMin, topMax]
   );
   return (
     <div
@@ -245,7 +246,6 @@ const TakeoffBackground = ({ bank, pitch, progress }) => {
   // 0.00–0.30  ground roll          (runway full, camera level)
   // 0.30–0.45  rotation              (nose pitches up slightly)
   // 0.45–1.00  initial climb         (runway slides down out of view)
-  const roll = clamp(progress / 0.3, 0, 1);
   const rot = clamp((progress - 0.3) / 0.15, 0, 1);
   const climb = clamp((progress - 0.45) / 0.55, 0, 1);
 
